@@ -19,7 +19,6 @@ public class UserController {
 
     @PostMapping
     public UserResponseDTO createUser(@RequestBody @Valid UserRequestDTO dto){
-        System.out.println("Cheegou no endpoint");
         return service.createUser(dto);
     }
 }

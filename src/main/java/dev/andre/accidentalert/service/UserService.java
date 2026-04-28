@@ -6,6 +6,7 @@ import dev.andre.accidentalert.entity.User;
 import dev.andre.accidentalert.entity.enums.Role;
 import dev.andre.accidentalert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,13 +14,14 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO createUser(UserRequestDTO dto){
 
         User user = User.builder()
                 .name(dto.name())
                 .email(dto.email())
-                .password(dto.password())
+                .password(passwordEncoder.encode(dto.password()))
                 .role(Role.ROLE_STAFF)
                 .build();
 
