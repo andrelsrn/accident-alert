@@ -4,6 +4,7 @@ import dev.andre.accidentalert.dto.request.LoginRequestDTO;
 import dev.andre.accidentalert.dto.response.LoginResponseDTO;
 import dev.andre.accidentalert.entity.User;
 import dev.andre.accidentalert.repository.UserRepository;
+import dev.andre.accidentalert.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ public class AuthService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public LoginResponseDTO login(LoginRequestDTO dto) {
 
@@ -33,6 +35,8 @@ public class AuthService {
                     HttpStatus.UNAUTHORIZED, "Password is incorrect");
         }
 
-        return new LoginResponseDTO("Login successful");
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponseDTO(token);
     }
 }

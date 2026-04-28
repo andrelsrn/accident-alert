@@ -1,5 +1,5 @@
 package dev.andre.accidentalert.dto.response;
 
 public record LoginResponseDTO(
-        String message
+        String token
 ) {}
