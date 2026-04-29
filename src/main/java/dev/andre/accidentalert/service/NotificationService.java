@@ -17,6 +17,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public void notifyManagers(Accident accident) {
 
@@ -31,6 +32,21 @@ public class NotificationService {
                     .createdAt(LocalDateTime.now())
                     .accident(accident)
                     .build();
+
+
+
+            try {
+                emailService.send(
+                        manager.getEmail(),
+                        "🚨 Novo Acidente",
+                        notification.getMessage()
+                );
+
+                notification.setStatus(NotificationStatus.SENT);
+
+            } catch (Exception e) {
+                notification.setStatus(NotificationStatus.FAILED);
+            }
 
             notificationRepository.save(notification);
         }
