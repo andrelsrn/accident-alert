@@ -4,6 +4,7 @@ import dev.andre.accidentalert.dto.request.AccidentRequestDTO;
 import dev.andre.accidentalert.dto.response.AccidentResponseDTO;
 import dev.andre.accidentalert.entity.Accident;
 import dev.andre.accidentalert.entity.User;
+import dev.andre.accidentalert.entity.enums.Severity;
 import dev.andre.accidentalert.repository.AccidentRepository;
 import dev.andre.accidentalert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class AccidentService {
 
     private final AccidentRepository accidentRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public AccidentResponseDTO create(AccidentRequestDTO dto){
         String email = (String) SecurityContextHolder
@@ -39,6 +41,11 @@ public class AccidentService {
 
 
         Accident saved = accidentRepository.save(accident);
+
+        if (saved.getSeverity() == Severity.HIGH ||
+        saved.getSeverity() == Severity.CRITICAL) {
+            notificationService.notifyManagers(saved);
+        }
 
         return new AccidentResponseDTO(
                 saved.getId(),
