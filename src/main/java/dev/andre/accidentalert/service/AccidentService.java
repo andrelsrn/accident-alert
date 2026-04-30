@@ -8,8 +8,10 @@ import dev.andre.accidentalert.entity.enums.Severity;
 import dev.andre.accidentalert.repository.AccidentRepository;
 import dev.andre.accidentalert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +32,10 @@ public class AccidentService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(!user.getActive()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User account is deactivated");
+        }
 
         Accident accident = Accident.builder()
                 .description(dto.description())

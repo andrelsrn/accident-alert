@@ -25,6 +25,11 @@ public class AuthService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found"));
 
+        if (!user.getActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "User account is deactivated");
+        }
+
         boolean passwordMatches = passwordEncoder.matches(
                 dto.password(),
                 user.getPassword()

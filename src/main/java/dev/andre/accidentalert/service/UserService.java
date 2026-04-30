@@ -59,5 +59,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void deactivateUser(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
+                , "User not found"));
+
+        user.setActive(false);
+        userRepository.save(user);
+    }
 
 }

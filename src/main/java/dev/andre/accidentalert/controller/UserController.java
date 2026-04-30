@@ -33,6 +33,11 @@ public class UserController {
         service.changePassword(dto, email);
 
         return ResponseEntity.noContent().build();
+    }
 
-}
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateUser(@PathVariable Long id){
+        service.deactivateUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
