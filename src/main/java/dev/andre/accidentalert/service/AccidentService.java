@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,6 @@ public class AccidentService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-
         Accident accident = Accident.builder()
                 .description(dto.description())
                 .location(dto.location())
@@ -38,7 +38,6 @@ public class AccidentService {
                 .createdAt(LocalDateTime.now())
                 .createdBy(user)
                 .build();
-
 
         Accident saved = accidentRepository.save(accident);
 
@@ -55,5 +54,19 @@ public class AccidentService {
                 saved.getCreatedAt(),
                 user.getEmail()
         );
+    }
+
+    public List<AccidentResponseDTO> findAll() {
+        return accidentRepository.findAll()
+                .stream()
+                .map(accident -> new AccidentResponseDTO(
+                        accident.getId(),
+                        accident.getDescription(),
+                        accident.getLocation(),
+                        accident.getSeverity(),
+                        accident.getCreatedAt(),
+                        accident.getCreatedBy().getEmail()
+                ))
+                .toList();
     }
 }
