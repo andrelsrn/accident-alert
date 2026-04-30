@@ -36,6 +36,8 @@ public class AccidentService {
                 .location(dto.location())
                 .severity(dto.severity())
                 .createdAt(LocalDateTime.now())
+                .victimName(dto.victimName())
+                .victimDepartment(dto.victimDepartment())
                 .createdBy(user)
                 .build();
 
@@ -52,7 +54,10 @@ public class AccidentService {
                 saved.getLocation(),
                 saved.getSeverity(),
                 saved.getCreatedAt(),
-                user.getEmail()
+                user.getEmail(),
+                saved.getVictimName(),
+                saved.getVictimDepartment()
+
         );
     }
 
@@ -65,6 +70,8 @@ public class AccidentService {
                         accident.getLocation(),
                         accident.getSeverity(),
                         accident.getCreatedAt(),
+                        accident.getVictimName(),
+                        accident.getVictimDepartment(),
                         accident.getCreatedBy().getEmail()
                 ))
                 .toList();

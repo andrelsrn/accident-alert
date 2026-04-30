@@ -28,10 +28,21 @@ public class Accident {
     @Enumerated(EnumType.STRING)
     private Severity severity;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
 
+    @Column(nullable = false)
+    private String victimName;
+
+    @Column(nullable = false)
+    private String victimDepartment;
 }

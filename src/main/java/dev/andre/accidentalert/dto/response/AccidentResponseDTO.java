@@ -12,5 +12,7 @@ public record AccidentResponseDTO(
         String location,
         Severity severity,
         LocalDateTime createdAt,
-        String createdBy
+        String createdBy,
+        String victimName,
+        String victimDepartment
 ) {}

@@ -13,5 +13,11 @@ public record AccidentRequestDTO(
         String location,
 
         @NotNull
-        Severity severity
+        Severity severity,
+
+        @NotBlank
+        String victimName,
+
+        @NotBlank
+        String victimDepartment
 ) {}
