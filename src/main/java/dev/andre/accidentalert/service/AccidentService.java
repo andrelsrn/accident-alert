@@ -76,4 +76,29 @@ public class AccidentService {
                 ))
                 .toList();
     }
+
+    public List<AccidentResponseDTO> findBySeverity(Severity severity) {
+
+        List<Accident> accidents;
+
+        if (severity != null) {
+            accidents = accidentRepository.findBySeverity(severity);
+        } else {
+            accidents = accidentRepository.findAll();
+        }
+
+        return accidents.stream()
+                .map(a -> new AccidentResponseDTO(
+                        a.getId(),
+                        a.getDescription(),
+                        a.getLocation(),
+                        a.getSeverity(),
+                        a.getCreatedAt(),
+                        a.getCreatedBy().getEmail(),
+                        a.getVictimName(),
+                        a.getVictimDepartment()
+                ))
+                .toList();
+    }
+
 }
