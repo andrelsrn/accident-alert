@@ -1,15 +1,16 @@
 package dev.andre.accidentalert.service;
 
+import dev.andre.accidentalert.dto.request.ChangePasswordDTO;
 import dev.andre.accidentalert.dto.request.UserRequestDTO;
 import dev.andre.accidentalert.dto.response.UserResponseDTO;
 import dev.andre.accidentalert.entity.User;
 import dev.andre.accidentalert.entity.enums.Role;
 import dev.andre.accidentalert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,26 @@ public class UserService {
                 savedUser.getRole()
 
         );
+    }
+
+    public void changePassword(ChangePasswordDTO dto, String email) {
+
+        User user = userRepository  .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
+                        , "User not found"));
+
+        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED
+                    ,"Current password is incorrect");
+        }
+
+        if (passwordEncoder.matches(dto.newPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
+                    ,"New password cannot be the same as the current password");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(user);
     }
 
 
