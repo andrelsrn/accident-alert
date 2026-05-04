@@ -1,5 +1,6 @@
 package dev.andre.accidentalert.dto.response;
 
 public record LoginResponseDTO(
-        String token
+        String token,
+        Boolean mustChangePassword
 ) {}

@@ -1,6 +1,8 @@
 package dev.andre.accidentalert.service;
 
 import dev.andre.accidentalert.dto.request.ChangePasswordDTO;
+import dev.andre.accidentalert.dto.request.CreateUserDTO;
+import dev.andre.accidentalert.dto.request.UpdateUserRoleDTO;
 import dev.andre.accidentalert.dto.request.UserRequestDTO;
 import dev.andre.accidentalert.dto.response.UserResponseDTO;
 import dev.andre.accidentalert.entity.User;
@@ -21,12 +23,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDTO createUser(UserRequestDTO dto){
+    public UserResponseDTO createUser(CreateUserDTO dto){
 
         User user = User.builder()
                 .name(dto.name())
                 .email(dto.email())
-                .password(passwordEncoder.encode(dto.password()))
+                .password(passwordEncoder.encode("123456"))
+                .mustChangePassword(true)
                 .role(Role.ROLE_STAFF)
                 .active(true)
                 .build();
@@ -82,6 +85,15 @@ public class UserService {
                         user.getActive()
                 ))
                 .toList();
+   }
+
+   public void updateUserRole(Long id, UpdateUserRoleDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
+                        , "User not found"));
+
+        user.setRole(dto.role());
+        userRepository.save(user);
    }
 
 

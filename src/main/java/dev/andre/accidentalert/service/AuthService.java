@@ -43,27 +43,9 @@ public class AuthService {
 
         String token = jwtService.generateToken(user.getEmail());
 
-        return new LoginResponseDTO(token);
-    }
-
-    public LoginResponseDTO register(RegisterDTO dto) {
-        if (repository.findByEmail(dto.email()).isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Email is already in use");
-        }
-
-        User user = User.builder()
-                .name(dto.name())
-                .email(dto.email())
-                .password(passwordEncoder.encode(dto.password()))
-                .role(dev.andre.accidentalert.entity.enums.Role.ROLE_STAFF)
-                .active(true)
-                .build();
-
-        repository.save(user);
-
-        String token = jwtService.generateToken(user.getEmail());
-
-        return new LoginResponseDTO(token);
+        return new LoginResponseDTO(
+                token,
+                user.getMustChangePassword()
+        );
     }
 }

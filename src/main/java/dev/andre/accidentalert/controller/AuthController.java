@@ -22,10 +22,4 @@ public class AuthController {
         return authService.login(dto);
     }
 
-    @PostMapping("register")
-    public LoginResponseDTO register(@RequestBody RegisterDTO dto) {
-        return authService.register(dto);
-    }
-
-
 }

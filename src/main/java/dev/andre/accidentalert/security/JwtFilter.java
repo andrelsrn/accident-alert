@@ -54,6 +54,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User account is deactivated");
             }
 
+            if (user.getMustChangePassword()) {
+
+                String path = request.getRequestURI();
+                if (!path.contains("auth/login") && !path.contains("users/password")) {
+                    throw new ResponseStatusException(
+                            HttpStatus.FORBIDDEN,
+                            "You must change your password before accessing other resources");
+                }
+
+            }
+
             List<GrantedAuthority> authorities = List.of(
                     new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 

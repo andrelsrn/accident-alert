@@ -33,4 +33,7 @@ public class User {
 
     @Column(nullable = false)
     private Boolean active = true;
+
+    @Column(nullable = false)
+    private Boolean mustChangePassword = true;
 }
