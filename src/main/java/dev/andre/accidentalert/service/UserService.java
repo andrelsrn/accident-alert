@@ -96,5 +96,18 @@ public class UserService {
         userRepository.save(user);
    }
 
+    public UserResponseDTO findUserById(Long id) {
+          User user = userRepository.findById(id)
+                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
+                            , "User not found"));
+
+          return new UserResponseDTO(
+                 user.getId(),
+                 user.getName(),
+                 user.getEmail(),
+                 user.getRole(),
+                 user.getActive()
+          );
+    }
 
 }
