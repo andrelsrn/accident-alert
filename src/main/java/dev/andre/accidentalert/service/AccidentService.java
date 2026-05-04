@@ -116,4 +116,20 @@ public class AccidentService {
                 .toList();
     }
 
+    public AccidentResponseDTO findById(Long id) {
+        Accident accident = accidentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Accident not found"));
+
+        return new AccidentResponseDTO(
+                accident.getId(),
+                accident.getDescription(),
+                accident.getLocation(),
+                accident.getSeverity(),
+                accident.getCreatedAt(),
+                accident.getCreatedBy().getEmail(),
+                accident.getVictimName(),
+                accident.getVictimDepartment(),
+                accident.getStatus()
+        );
+    }
 }

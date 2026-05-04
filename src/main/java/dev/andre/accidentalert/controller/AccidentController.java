@@ -36,4 +36,9 @@ public class AccidentController {
 
         return ResponseEntity.ok(service.findBySeverity(severity));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccidentResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
 }
