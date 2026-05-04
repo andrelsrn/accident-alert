@@ -1,5 +1,6 @@
 package dev.andre.accidentalert.entity;
 
+import dev.andre.accidentalert.entity.enums.AccidentStatus;
 import dev.andre.accidentalert.entity.enums.Severity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,4 +46,7 @@ public class Accident {
 
     @Column(nullable = false)
     private String victimDepartment;
+
+    @Enumerated(EnumType.STRING)
+    private AccidentStatus status;
 }

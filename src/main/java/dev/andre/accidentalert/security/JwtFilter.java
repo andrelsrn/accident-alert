@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -51,17 +54,20 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User account is deactivated");
             }
 
+            List<GrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+
             UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),
-                    Collections.emptyList()
+                    authorities
             );
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
-                            Collections.emptyList()
+                            userDetails.getAuthorities()
                     );
 
             SecurityContextHolder.getContext().setAuthentication(authToken);

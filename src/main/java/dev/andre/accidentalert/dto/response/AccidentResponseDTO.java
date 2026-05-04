@@ -1,9 +1,11 @@
 package dev.andre.accidentalert.dto.response;
 
 
+import dev.andre.accidentalert.entity.enums.AccidentStatus;
 import dev.andre.accidentalert.entity.enums.Severity;
 
 import java.time.LocalDateTime;
+
 
 public record AccidentResponseDTO(
 
@@ -14,5 +16,6 @@ public record AccidentResponseDTO(
         LocalDateTime createdAt,
         String createdBy,
         String victimName,
-        String victimDepartment
+        String victimDepartment,
+        AccidentStatus status
 ) {}

@@ -26,6 +26,7 @@ public class UserService {
                 .email(dto.email())
                 .password(passwordEncoder.encode(dto.password()))
                 .role(Role.ROLE_STAFF)
+                .active(true)
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -34,7 +35,8 @@ public class UserService {
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail(),
-                savedUser.getRole()
+                savedUser.getRole(),
+                savedUser.getActive()
 
         );
     }

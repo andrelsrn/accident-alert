@@ -10,6 +10,7 @@ import dev.andre.accidentalert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,10 +26,13 @@ public class AccidentService {
     private final NotificationService notificationService;
 
     public AccidentResponseDTO create(AccidentRequestDTO dto){
-        String email = (String) SecurityContextHolder
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+
+        // username aqui é o email do usuário.
+        String email = userDetails.getUsername();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,6 +49,7 @@ public class AccidentService {
                 .victimName(dto.victimName())
                 .victimDepartment(dto.victimDepartment())
                 .createdBy(user)
+                .status(dto.status())
                 .build();
 
         Accident saved = accidentRepository.save(accident);
@@ -62,7 +67,9 @@ public class AccidentService {
                 saved.getCreatedAt(),
                 user.getEmail(),
                 saved.getVictimName(),
-                saved.getVictimDepartment()
+                saved.getVictimDepartment(),
+                saved.getStatus()
+
 
         );
     }
@@ -78,7 +85,8 @@ public class AccidentService {
                         accident.getCreatedAt(),
                         accident.getVictimName(),
                         accident.getVictimDepartment(),
-                        accident.getCreatedBy().getEmail()
+                        accident.getCreatedBy().getEmail(),
+                        accident.getStatus()
                 ))
                 .toList();
     }
@@ -102,7 +110,8 @@ public class AccidentService {
                         a.getCreatedAt(),
                         a.getCreatedBy().getEmail(),
                         a.getVictimName(),
-                        a.getVictimDepartment()
+                        a.getVictimDepartment(),
+                        a.getStatus()
                 ))
                 .toList();
     }
