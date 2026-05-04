@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
@@ -40,4 +42,11 @@ public class UserController {
         service.deactivateUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getUsers(
+            @RequestParam boolean active){
+        return ResponseEntity.ok(service.findUsersByActive(active));
+    }
+
 }

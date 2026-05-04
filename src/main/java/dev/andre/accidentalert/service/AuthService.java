@@ -1,6 +1,7 @@
 package dev.andre.accidentalert.service;
 
 import dev.andre.accidentalert.dto.request.LoginRequestDTO;
+import dev.andre.accidentalert.dto.request.RegisterDTO;
 import dev.andre.accidentalert.dto.response.LoginResponseDTO;
 import dev.andre.accidentalert.entity.User;
 import dev.andre.accidentalert.repository.UserRepository;
@@ -39,6 +40,27 @@ public class AuthService {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "Password is incorrect");
         }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponseDTO(token);
+    }
+
+    public LoginResponseDTO register(RegisterDTO dto) {
+        if (repository.findByEmail(dto.email()).isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Email is already in use");
+        }
+
+        User user = User.builder()
+                .name(dto.name())
+                .email(dto.email())
+                .password(passwordEncoder.encode(dto.password()))
+                .role(dev.andre.accidentalert.entity.enums.Role.ROLE_STAFF)
+                .active(true)
+                .build();
+
+        repository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
 

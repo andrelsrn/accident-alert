@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -69,5 +71,18 @@ public class UserService {
         user.setActive(false);
         userRepository.save(user);
     }
+
+   public List<UserResponseDTO> findUsersByActive(boolean active) {
+        return userRepository.findByActive(active).stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.getActive()
+                ))
+                .toList();
+   }
+
 
 }

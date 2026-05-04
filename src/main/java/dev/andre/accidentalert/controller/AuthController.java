@@ -1,6 +1,7 @@
 package dev.andre.accidentalert.controller;
 
 import dev.andre.accidentalert.dto.request.LoginRequestDTO;
+import dev.andre.accidentalert.dto.request.RegisterDTO;
 import dev.andre.accidentalert.dto.response.LoginResponseDTO;
 import dev.andre.accidentalert.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -20,4 +21,11 @@ public class AuthController {
     public LoginResponseDTO login(@RequestBody LoginRequestDTO dto) {
         return authService.login(dto);
     }
+
+    @PostMapping("register")
+    public LoginResponseDTO register(@RequestBody RegisterDTO dto) {
+        return authService.register(dto);
+    }
+
+
 }
