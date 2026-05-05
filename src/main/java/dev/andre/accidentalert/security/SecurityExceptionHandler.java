@@ -1,10 +1,14 @@
 package dev.andre.accidentalert.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.andre.accidentalert.dto.response.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+
+import java.time.LocalDateTime;
 
 @Configuration
 public class SecurityExceptionHandler {
@@ -15,37 +19,38 @@ public class SecurityExceptionHandler {
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, ex) -> {
+
+            ErrorResponseDTO error = new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    403,
+                    "Access Denied",
+                    "You do not have permission to access this resource",
+                    request.getRequestURI()
+            );
+
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
 
-            response.getWriter().write("""
-                {
-                    "status": 403,
-                    "error": "Access Denied",
-                    "message": "You do not have permission to access this resource",
-                    "path": "%s"
-                }
-            """.formatted(request.getRequestURI()));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(error));
         };
     }
 
-    /**
-     * 401 - User is not authenticated and needs to log in to access the resource.
-     */
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, ex) -> {
+
+            ErrorResponseDTO error = new ErrorResponseDTO(
+                    LocalDateTime.now(),
+                    401,
+                    "Unauthorized",
+                    "Authentication is required",
+                    request.getRequestURI()
+            );
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
 
-            response.getWriter().write("""
-                {
-                    "status": 401,
-                    "error": "Unauthorized",
-                    "message": "Authentication is required",
-                    "path": "%s"
-                }
-            """.formatted(request.getRequestURI()));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(error));
         };
     }
 

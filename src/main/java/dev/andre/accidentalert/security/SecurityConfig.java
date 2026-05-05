@@ -31,9 +31,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
+
                 .authorizeHttpRequests(auth -> auth
 
                         // Public endpoints
