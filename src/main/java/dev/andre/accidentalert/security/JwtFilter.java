@@ -18,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Component

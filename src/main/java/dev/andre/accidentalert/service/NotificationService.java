@@ -21,7 +21,7 @@ public class NotificationService {
 
     public void notifyManagers(Accident accident) {
 
-        List<User> managers = userRepository.findByRole(Role.ROLE_MANAGER);
+        List<User> managers = userRepository.findByRole(Role.MANAGER);
 
         for (User manager : managers) {
 

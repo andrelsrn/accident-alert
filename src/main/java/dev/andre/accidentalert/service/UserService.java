@@ -3,7 +3,6 @@ package dev.andre.accidentalert.service;
 import dev.andre.accidentalert.dto.request.ChangePasswordDTO;
 import dev.andre.accidentalert.dto.request.CreateUserDTO;
 import dev.andre.accidentalert.dto.request.UpdateUserRoleDTO;
-import dev.andre.accidentalert.dto.request.UserRequestDTO;
 import dev.andre.accidentalert.dto.response.UserResponseDTO;
 import dev.andre.accidentalert.entity.User;
 import dev.andre.accidentalert.entity.enums.Role;
@@ -30,7 +29,7 @@ public class UserService {
                 .email(dto.email())
                 .password(passwordEncoder.encode("123456"))
                 .mustChangePassword(true)
-                .role(Role.ROLE_STAFF)
+                .role(Role.STAFF)
                 .active(true)
                 .build();
 
@@ -63,6 +62,7 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        user.setMustChangePassword(false);
         userRepository.save(user);
     }
 

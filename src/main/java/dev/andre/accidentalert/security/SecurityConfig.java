@@ -1,15 +1,21 @@
 package dev.andre.accidentalert.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity
+/**
+ * Security configuration using JWT + Role-based access control.
+ * Authorization rules are mainly handled via @PreAuthorize.
+ */
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -20,7 +26,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/auth/**","/swagger-ui/**", "swagger-ui.html","/v3/api-docs/**").permitAll()
+
+                        // Public endpoints
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
