@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/accident_alert_test
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+  mail:
+    host: localhost
+    port: 1025
+
+jwt:
+  secret: test-secret-key-test-secret-key
