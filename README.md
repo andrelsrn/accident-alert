@@ -4,6 +4,7 @@ API REST para gerenciamento de acidentes em ambiente ambulatorial, com foco em *
 
 Este projeto foi inspirado em um cenário real de necessidade de comunicação rápida em ambientes ambulatoriais, onde falhas na notificação de incidentes podem impactar diretamente o tempo de resposta.
 
+![CI](https://github.com/andrelsrn/accident-alert/actions/workflows/ci.yml/badge.svg)
 ---
 
 ## 📌 Visão Geral
