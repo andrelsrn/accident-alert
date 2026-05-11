@@ -191,7 +191,48 @@ As migrations são aplicadas automaticamente pelo Flyway ao iniciar a aplicaçã
 
 
 ---
+## CI/CD Pipeline
 
+O projeto possui uma pipeline de Integração Contínua (CI) utilizando GitHub Actions, garantindo validação automática da aplicação a cada push e pull request.
+
+### O que a pipeline executa
+
+- Build automatizado com Maven
+- Execução de testes unitários
+- Execução de testes de integração
+- Inicialização automática de container PostgreSQL
+- Validação de migrations com Flyway
+- Validação completa do contexto Spring Boot
+
+### Stack utilizada na pipeline
+
+- GitHub Actions
+- Docker
+- PostgreSQL 16
+- Maven
+- JUnit 5
+- MockMvc
+- Flyway
+
+### Fluxo automatizado
+
+```text
+Push/PR
+   ↓
+GitHub Actions
+   ↓
+Start PostgreSQL Container
+   ↓
+Run Flyway Migrations
+   ↓
+Execute Unit Tests
+   ↓
+Execute Integration Tests
+   ↓
+Build Validation
+```
+
+---
 
 
 ## 🐳 Docker
@@ -261,7 +302,6 @@ docker-compose up --build
 
 ---
 ##  🧪 Roadmap
-- Testes automatizados (JUnit + Mockito)
 - Observabilidade (logs estruturados)
 - Deploy em nuvem
 - Sistema de notificações em tempo real
