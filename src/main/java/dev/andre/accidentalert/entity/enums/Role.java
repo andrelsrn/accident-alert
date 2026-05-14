@@ -2,6 +2,10 @@ package dev.andre.accidentalert.entity.enums;
 
 public enum Role {
     ADMIN,
-    STAFF,
-    MANAGER
+    MANAGER,
+    NURSE,
+    DOCTOR,
+    SAFETY_TECHNICIAN,
+    SUPERVISOR,
+    STAFF
 }
