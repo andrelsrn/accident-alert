@@ -7,6 +7,7 @@ import dev.andre.accidentalert.ambulatory.entity.User;
 import dev.andre.accidentalert.ambulatory.entity.enums.Severity;
 import dev.andre.accidentalert.ambulatory.repository.AccidentRepository;
 import dev.andre.accidentalert.ambulatory.repository.UserRepository;
+import dev.andre.accidentalert.ambulatory.mapper.AccidentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,35 +60,13 @@ public class AccidentService {
             notificationService.notifyManagers(saved);
         }
 
-        return new AccidentResponseDTO(
-                saved.getId(),
-                saved.getDescription(),
-                saved.getLocation(),
-                saved.getSeverity(),
-                saved.getCreatedAt(),
-                user.getEmail(),
-                saved.getVictimName(),
-                saved.getVictimDepartment(),
-                saved.getStatus()
-
-
-        );
+        return AccidentMapper.toResponseDTO(saved);
     }
 
     public List<AccidentResponseDTO> findAll() {
         return accidentRepository.findAll()
                 .stream()
-                .map(accident -> new AccidentResponseDTO(
-                        accident.getId(),
-                        accident.getDescription(),
-                        accident.getLocation(),
-                        accident.getSeverity(),
-                        accident.getCreatedAt(),
-                        accident.getVictimName(),
-                        accident.getVictimDepartment(),
-                        accident.getCreatedBy().getEmail(),
-                        accident.getStatus()
-                ))
+                .map(AccidentMapper::toResponseDTO)
                 .toList();
     }
 
@@ -102,17 +81,7 @@ public class AccidentService {
         }
 
         return accidents.stream()
-                .map(a -> new AccidentResponseDTO(
-                        a.getId(),
-                        a.getDescription(),
-                        a.getLocation(),
-                        a.getSeverity(),
-                        a.getCreatedAt(),
-                        a.getCreatedBy().getEmail(),
-                        a.getVictimName(),
-                        a.getVictimDepartment(),
-                        a.getStatus()
-                ))
+                .map(AccidentMapper::toResponseDTO)
                 .toList();
     }
 
@@ -120,16 +89,6 @@ public class AccidentService {
         Accident accident = accidentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Accident not found"));
 
-        return new AccidentResponseDTO(
-                accident.getId(),
-                accident.getDescription(),
-                accident.getLocation(),
-                accident.getSeverity(),
-                accident.getCreatedAt(),
-                accident.getCreatedBy().getEmail(),
-                accident.getVictimName(),
-                accident.getVictimDepartment(),
-                accident.getStatus()
-        );
+        return AccidentMapper.toResponseDTO(accident);
     }
 }
