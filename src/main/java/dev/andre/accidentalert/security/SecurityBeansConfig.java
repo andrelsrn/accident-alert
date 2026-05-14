@@ -12,7 +12,7 @@ public class SecurityBeansConfig {
 
     /**
      * Defines role hierarchy:
-     * ADMIN > MANAGER > STAFF
+     * ADMIN > MANAGER > NURSE > STAFF
      */
     @Bean
     public RoleHierarchy roleHierarchy() {
@@ -20,7 +20,8 @@ public class SecurityBeansConfig {
 
         hierarchy.setHierarchy("""
             ROLE_ADMIN > ROLE_MANAGER
-            ROLE_MANAGER > ROLE_STAFF
+            ROLE_MANAGER > ROLE_NURSE
+            ROLE_NURSE > ROLE_STAFF
         """);
 
         return hierarchy;
