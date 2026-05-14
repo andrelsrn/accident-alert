@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class InvestigationService {
         Accident accident = accidentRepository.findById(dto.accidentId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Accident not found"));
         if (repository.existsByAccident(accident))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Accident is already in use ");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Accident is already in use");
 
         Investigation investigation = Investigation.builder()
                 .accident(accident)
@@ -80,4 +82,73 @@ public class InvestigationService {
                 saved.getCreatedAt()
         );
     }
+
+    public InvestigationResponseDTO findById(Long id){
+        Investigation investigation = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Investigation not found"));
+
+        User assignedTechnician = investigation.getAssignedTechnician();
+        UserSummaryDTO technicianSummary = new UserSummaryDTO(
+                assignedTechnician.getId(),
+                assignedTechnician.getName()
+        );
+
+        Accident accident = investigation.getAccident();
+        AccidentSummaryDTO accidentSummary = new AccidentSummaryDTO(
+                accident.getId(),
+                accident.getDescription(),
+                accident.getLocation(),
+                accident.getSeverity(),
+                accident.getVictimName(),
+                accident.getStatus(),
+                technicianSummary
+        );
+
+        return new InvestigationResponseDTO(
+                investigation.getId(),
+                accidentSummary,
+                technicianSummary,
+                investigation.getRootCause(),
+                investigation.getObservation(),
+                investigation.getStatus(),
+                investigation.getCreatedAt()
+        );
+    }
+
+    public List<InvestigationResponseDTO> findAll(){
+        List<Investigation> investigations = repository.findAll();
+
+        return investigations.stream()
+                .map(investigation -> {
+                    User assignedTechnician = investigation.getAssignedTechnician();
+                    UserSummaryDTO technicianSummary = new UserSummaryDTO(
+                            assignedTechnician.getId(),
+                            assignedTechnician.getName()
+                    );
+
+                    Accident accident = investigation.getAccident();
+                    AccidentSummaryDTO accidentSummary = new AccidentSummaryDTO(
+                            accident.getId(),
+                            accident.getDescription(),
+                            accident.getLocation(),
+                            accident.getSeverity(),
+                            accident.getVictimName(),
+                            accident.getStatus(),
+                            technicianSummary
+                    );
+
+                    return new InvestigationResponseDTO(
+                            investigation.getId(),
+                            accidentSummary,
+                            technicianSummary,
+                            investigation.getRootCause(),
+                            investigation.getObservation(),
+                            investigation.getStatus(),
+                            investigation.getCreatedAt()
+                    );
+                })
+                .toList();
+    }
 }
+
+

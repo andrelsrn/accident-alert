@@ -17,9 +17,14 @@ public class InvestigationController {
 
     private final InvestigationService service;
 
+
     @PostMapping("/investigation")
     public InvestigationResponseDTO create(@RequestBody @Valid InvestigationRequestDTO dto) {
         return service.create(dto);
     }
 
+    @GetMapping("/investigation")
+    public List<InvestigationResponseDTO> findAll() {
+        return service.findAll();
+    }
 }
