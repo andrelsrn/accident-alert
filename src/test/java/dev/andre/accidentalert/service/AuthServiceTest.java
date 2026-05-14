@@ -1,10 +1,11 @@
 package dev.andre.accidentalert.service;
 
-import dev.andre.accidentalert.dto.request.LoginRequestDTO;
-import dev.andre.accidentalert.dto.response.LoginResponseDTO;
-import dev.andre.accidentalert.entity.User;
-import dev.andre.accidentalert.entity.enums.Role;
-import dev.andre.accidentalert.repository.UserRepository;
+import dev.andre.accidentalert.ambulatory.dto.request.LoginRequestDTO;
+import dev.andre.accidentalert.ambulatory.dto.response.LoginResponseDTO;
+import dev.andre.accidentalert.ambulatory.entity.User;
+import dev.andre.accidentalert.ambulatory.entity.enums.Role;
+import dev.andre.accidentalert.ambulatory.repository.UserRepository;
+import dev.andre.accidentalert.ambulatory.service.AuthService;
 import dev.andre.accidentalert.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

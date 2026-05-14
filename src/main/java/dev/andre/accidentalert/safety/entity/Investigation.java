@@ -1,7 +1,7 @@
 package dev.andre.accidentalert.safety.entity;
 
-import dev.andre.accidentalert.entity.Accident;
-import dev.andre.accidentalert.entity.User;
+import dev.andre.accidentalert.ambulatory.entity.Accident;
+import dev.andre.accidentalert.ambulatory.entity.User;
 import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
 import jakarta.persistence.*;
 import lombok.*;

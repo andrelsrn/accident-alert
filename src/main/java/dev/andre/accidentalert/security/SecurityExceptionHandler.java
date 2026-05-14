@@ -1,7 +1,7 @@
 package dev.andre.accidentalert.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.andre.accidentalert.dto.response.ErrorResponseDTO;
+import dev.andre.accidentalert.ambulatory.dto.response.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

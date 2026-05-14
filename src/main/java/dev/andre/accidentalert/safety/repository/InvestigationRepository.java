@@ -1,6 +1,6 @@
 package dev.andre.accidentalert.safety.repository;
 
-import dev.andre.accidentalert.entity.Accident;
+import dev.andre.accidentalert.ambulatory.entity.Accident;
 import dev.andre.accidentalert.safety.entity.Investigation;
 import org.springframework.data.jpa.repository.JpaRepository;
 

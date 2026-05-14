@@ -1,9 +1,9 @@
 package dev.andre.accidentalert.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.andre.accidentalert.dto.response.ErrorResponseDTO;
-import dev.andre.accidentalert.entity.User;
-import dev.andre.accidentalert.repository.UserRepository;
+import dev.andre.accidentalert.ambulatory.dto.response.ErrorResponseDTO;
+import dev.andre.accidentalert.ambulatory.entity.User;
+import dev.andre.accidentalert.ambulatory.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
