@@ -2,7 +2,6 @@ package dev.andre.accidentalert.safety.controller;
 
 import dev.andre.accidentalert.safety.dto.request.InvestigationRequestDTO;
 import dev.andre.accidentalert.safety.dto.response.InvestigationResponseDTO;
-import dev.andre.accidentalert.safety.entity.Investigation;
 import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
 import dev.andre.accidentalert.safety.service.InvestigationService;
 import io.swagger.v3.oas.annotations.Operation;

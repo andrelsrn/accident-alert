@@ -4,8 +4,13 @@ import dev.andre.accidentalert.ambulatory.dto.request.AccidentRequestDTO;
 import dev.andre.accidentalert.ambulatory.dto.response.AccidentResponseDTO;
 import dev.andre.accidentalert.ambulatory.entity.enums.Severity;
 import dev.andre.accidentalert.ambulatory.service.AccidentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,44 +21,50 @@ import java.util.List;
 @RestController
 @RequestMapping("/accidents")
 @RequiredArgsConstructor
+@Tag(name = "Accidents", description = "Endpoints for managing factory accidents and severity filters.")
 public class AccidentController {
 
     private final AccidentService service;
 
-    /**
-     * STAFF+ can create accidents
-     */
+
     @PreAuthorize("hasRole('STAFF')")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new accident report", description = "Allowed roles: STAFF or higher.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Report created successfully"),
+            @ApiResponse(responseCode = "403", description = "Access denied - Requires STAFF role")
+    })
     public AccidentResponseDTO create(@RequestBody @Valid AccidentRequestDTO dto) {
         return service.create(dto);
     }
 
-    /**
-     * STAFF+ can view accidents
-     */
+
     @PreAuthorize("hasRole('STAFF')")
     @GetMapping
+    @Operation(summary = "List all accident reports", description = "Allowed roles: STAFF or higher.")
     public List<AccidentResponseDTO> findAll() {
         return service.findAll();
     }
 
-    /**
-     * Filter by severity
-     */
+
     @PreAuthorize("hasRole('STAFF')")
     @GetMapping("/severity")
+    @Operation(summary = "Filter accidents by severity", description = "Retrieves a filtered list based on the severity level (e.g., LOW, HIGH).")
     public ResponseEntity<List<AccidentResponseDTO>> getBySeverity(
             @RequestParam(required = false) Severity severity) {
 
         return ResponseEntity.ok(service.findBySeverity(severity));
     }
 
-    /**
-     * STAFF+ can view accident by ID
-     */
+
     @PreAuthorize("hasRole('STAFF')")
     @GetMapping("/{id}")
+    @Operation(summary = "Get accident by ID", description = "Allowed roles: STAFF or higher.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Accident report not found")
+    })
     public ResponseEntity<AccidentResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
