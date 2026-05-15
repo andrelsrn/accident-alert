@@ -90,4 +90,12 @@ public class InvestigationService {
 
         return InvestigationMapper.toResponseDTO(saved);
     }
+
+    public List<InvestigationResponseDTO> findByStatus(InvestigationStatus status) {
+        List<Investigation> investigationList = Investigationrepository.findInvestigationByStatus(status);
+        return investigationList.stream()
+                .map(InvestigationMapper::toResponseDTO)
+                .toList();
+    }
+
 }
