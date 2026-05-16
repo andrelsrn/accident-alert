@@ -6,6 +6,7 @@ public enum Role {
     NURSE,
     DOCTOR,
     SAFETY_TECHNICIAN,
+    SAFETY_MANAGER,
     SUPERVISOR,
     STAFF
 }
