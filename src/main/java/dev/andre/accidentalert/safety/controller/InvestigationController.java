@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class InvestigationController {
 
     private final InvestigationService service;
 
-
-    @PostMapping // URL final: /safety/investigation
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new investigation", description = "Registers a new accident investigation.")
     @ApiResponse(responseCode = "201", description = "Created")
@@ -32,27 +33,31 @@ public class InvestigationController {
         return service.create(dto);
     }
 
-    @GetMapping // URL final: /safety/investigation
-    @Operation(summary = "List all investigations")
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @GetMapping
+    @Operation(summary = "List all investigations", description = "Only Safety Technician can access this endpoint.")
     public List<InvestigationResponseDTO> findAll() {
         return service.findAll();
     }
 
-    @GetMapping("/{id}") // URL final: /safety/investigation/{id}
-    @Operation(summary = "Find investigation by ID")
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @GetMapping("/{id}")
+    @Operation(summary = "Find investigation by ID", description = "Only Safety Technician can access this endpoint.")
     @ApiResponse(responseCode = "404", description = "Not Found")
     public InvestigationResponseDTO findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
-    @GetMapping("/status/{status}") // URL final: /safety/investigation/status/{status}
-    @Operation(summary = "Find investigations by status")
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @GetMapping("/status/{status}")
+    @Operation(summary = "Find investigations by status", description = "Only Safety Technician can access this endpoint.")
     public List<InvestigationResponseDTO> findByStatus(@PathVariable InvestigationStatus status) {
         return service.findByStatus(status);
     }
 
-    @PatchMapping("/{id}/status") // URL final: /safety/investigation/{id}/status
-    @Operation(summary = "Update investigation status")
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Update investigation status", description = "Only Safety Technician can access this endpoint.")
     public ResponseEntity<InvestigationResponseDTO> updateStatus(
             @PathVariable Long id,
             @RequestParam InvestigationStatus status,
