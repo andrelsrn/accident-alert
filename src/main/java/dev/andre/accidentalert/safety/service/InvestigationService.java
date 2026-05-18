@@ -94,6 +94,14 @@ public class InvestigationService {
     @Transactional
     public InvestigationResponseDTO updateStatus(Long id, InvestigationStatus newStatus, String observation) {
 
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Investigation investigation = investigationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Investigation not found"));
 
@@ -103,14 +111,14 @@ public class InvestigationService {
         InvestigationStatus oldStatus = investigation.getStatus();
 
         investigation.setStatus(newStatus);
-        investigation.setObservation(investigation.getObservation() + "\n - Status updated to: " + newStatus);
+        investigation.setObservation(observation);
         Investigation saved = investigationRepository.save(investigation);
         InvestigationHistory history = InvestigationHistory.builder()
                 .investigation(investigation)
                 .oldStatus(oldStatus)
                 .newStatus(newStatus)
                 .comment(observation)
-                .changedBy(investigation.getAssignedTechnician())
+                .changedBy(user)
                 .build();
 
         investigationHistoryRepository.save(history);
