@@ -8,8 +8,10 @@ import dev.andre.accidentalert.ambulatory.repository.UserRepository;
 import dev.andre.accidentalert.safety.dto.request.InvestigationRequestDTO;
 import dev.andre.accidentalert.safety.dto.response.InvestigationResponseDTO;
 import dev.andre.accidentalert.safety.entity.Investigation;
+import dev.andre.accidentalert.safety.entity.InvestigationHistory;
 import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
 import dev.andre.accidentalert.safety.mapper.InvestigationMapper;
+import dev.andre.accidentalert.safety.repository.InvestigationHistoryRepository;
 import dev.andre.accidentalert.safety.repository.InvestigationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class InvestigationService {
     private final InvestigationRepository investigationRepository;
     private final UserRepository userRepository;
     private final AccidentRepository accidentRepository;
+    private final InvestigationHistoryRepository investigationHistoryRepository;
 
     public InvestigationResponseDTO create(InvestigationRequestDTO dto) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder
@@ -97,9 +100,20 @@ public class InvestigationService {
         validateStatusTransition(investigation.getStatus(), newStatus);
         validateRoleTransition(newStatus);
 
+        InvestigationStatus oldStatus = investigation.getStatus();
+
         investigation.setStatus(newStatus);
         investigation.setObservation(investigation.getObservation() + "\n - Status updated to: " + newStatus);
         Investigation saved = investigationRepository.save(investigation);
+        InvestigationHistory history = InvestigationHistory.builder()
+                .investigation(investigation)
+                .oldStatus(oldStatus)
+                .newStatus(newStatus)
+                .comment(observation)
+                .changedBy(investigation.getAssignedTechnician())
+                .build();
+
+        investigationHistoryRepository.save(history);
 
         return InvestigationMapper.toResponseDTO(saved);
     }
