@@ -65,4 +65,6 @@ public class InvestigationController {
         InvestigationResponseDTO response = service.updateStatus(id, status, observation);
         return ResponseEntity.ok(response);
     }
+
+
 }

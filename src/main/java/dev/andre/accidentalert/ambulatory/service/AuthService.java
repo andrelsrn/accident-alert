@@ -23,7 +23,7 @@ public class AuthService {
 
         User user =  repository.findByEmail(dto.email())
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found"));
+                        HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         if (!user.getActive()) {
             throw new ResponseStatusException(
@@ -37,7 +37,7 @@ public class AuthService {
 
         if (!passwordMatches) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Password is incorrect");
+                    HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
         String token = jwtService.generateToken(user.getEmail());
