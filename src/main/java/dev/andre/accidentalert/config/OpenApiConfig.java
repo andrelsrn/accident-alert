@@ -16,7 +16,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Accident Alert API")
                         .version("1.0")
-                        .description("API para gerenciamento de acidentes com notificações"))
+                        .description("API documentation for the Accident Alert application"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth",

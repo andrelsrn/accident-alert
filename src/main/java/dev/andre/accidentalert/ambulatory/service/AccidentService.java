@@ -9,6 +9,8 @@ import dev.andre.accidentalert.ambulatory.repository.AccidentRepository;
 import dev.andre.accidentalert.ambulatory.repository.UserRepository;
 import dev.andre.accidentalert.ambulatory.mapper.AccidentMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,11 +65,11 @@ public class AccidentService {
         return AccidentMapper.toResponseDTO(saved);
     }
 
-    public List<AccidentResponseDTO> findAll() {
-        return accidentRepository.findAll()
-                .stream()
-                .map(AccidentMapper::toResponseDTO)
-                .toList();
+    public Page<AccidentResponseDTO> findAll(Pageable pageable) {
+        Page<Accident> accidents = accidentRepository.findAll(pageable);
+
+        return accidents.map(AccidentMapper::toResponseDTO);
+
     }
 
     public List<AccidentResponseDTO> findBySeverity(Severity severity) {

@@ -16,12 +16,15 @@ import dev.andre.accidentalert.safety.mapper.InvestigationMapper;
 import dev.andre.accidentalert.safety.repository.InvestigationHistoryRepository;
 import dev.andre.accidentalert.safety.repository.InvestigationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -85,12 +88,11 @@ public class InvestigationService {
         return InvestigationMapper.toResponseDTO(investigation);
     }
 
-    public List<InvestigationResponseDTO> findAll() {
-        List<Investigation> investigations = investigationRepository.findAll();
+    public Page<InvestigationResponseDTO> findAll(Pageable pageable) {
+        Page<Investigation> investigations = investigationRepository.findAll(pageable);
 
-        return investigations.stream()
-                .map(InvestigationMapper::toResponseDTO)
-                .toList();
+        return investigations.map(InvestigationMapper::toResponseDTO);
+
     }
 
     @Transactional

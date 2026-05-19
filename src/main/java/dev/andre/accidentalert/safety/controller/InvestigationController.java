@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,9 +40,14 @@ public class InvestigationController {
 
     @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
     @GetMapping
-    @Operation(summary = "List all investigations", description = "Only Safety Technician can access this endpoint.")
-    public List<InvestigationResponseDTO> findAll() {
-        return service.findAll();
+    @Operation(summary = "List all investigations with pagination", description = "Only Safety Technician can access this endpoint.")
+    public ResponseEntity<Page<InvestigationResponseDTO>> getAllInvestigations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.ofSize(size).withPage(page);
+        Page<InvestigationResponseDTO> investigations = service.findAll(pageable);
+        return ResponseEntity.ok(investigations);
     }
 
     @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
