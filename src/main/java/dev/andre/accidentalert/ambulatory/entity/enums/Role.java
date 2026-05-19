@@ -4,9 +4,7 @@ public enum Role {
     ADMIN,
     MANAGER,
     NURSE,
-    DOCTOR,
     SAFETY_TECHNICIAN,
     SAFETY_MANAGER,
-    SUPERVISOR,
     STAFF
 }
