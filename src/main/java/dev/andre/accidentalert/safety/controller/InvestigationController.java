@@ -1,11 +1,13 @@
 package dev.andre.accidentalert.safety.controller;
 
 import dev.andre.accidentalert.safety.dto.request.InvestigationRequestDTO;
+import dev.andre.accidentalert.safety.dto.response.InvestigationHistoryDTO;
 import dev.andre.accidentalert.safety.dto.response.InvestigationResponseDTO;
 import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
 import dev.andre.accidentalert.safety.service.InvestigationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +66,24 @@ public class InvestigationController {
             @RequestParam String observation) {
         InvestigationResponseDTO response = service.updateStatus(id, status, observation);
         return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
+    @GetMapping("/{id}/history")
+    @Operation(
+            summary = "Get investigation history",
+            description = "Returns the complete investigation status timeline."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "History retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Investigation not found"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
+    public ResponseEntity<List<InvestigationHistoryDTO>> getHistory(
+            @PathVariable Long id
+    ) {
+
+        return ResponseEntity.ok(service.getHistory(id));
     }
 
 

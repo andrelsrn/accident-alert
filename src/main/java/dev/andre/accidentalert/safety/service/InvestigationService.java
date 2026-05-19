@@ -6,20 +6,22 @@ import dev.andre.accidentalert.ambulatory.entity.enums.Role;
 import dev.andre.accidentalert.ambulatory.repository.AccidentRepository;
 import dev.andre.accidentalert.ambulatory.repository.UserRepository;
 import dev.andre.accidentalert.safety.dto.request.InvestigationRequestDTO;
+import dev.andre.accidentalert.safety.dto.response.InvestigationHistoryDTO;
 import dev.andre.accidentalert.safety.dto.response.InvestigationResponseDTO;
 import dev.andre.accidentalert.safety.entity.Investigation;
 import dev.andre.accidentalert.safety.entity.InvestigationHistory;
 import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
+import dev.andre.accidentalert.safety.mapper.InvestigationHistoryMapper;
 import dev.andre.accidentalert.safety.mapper.InvestigationMapper;
 import dev.andre.accidentalert.safety.repository.InvestigationHistoryRepository;
 import dev.andre.accidentalert.safety.repository.InvestigationRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -172,6 +174,22 @@ public class InvestigationService {
         List<Investigation> investigationList = investigationRepository.findInvestigationByStatus(status);
         return investigationList.stream()
                 .map(InvestigationMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<InvestigationHistoryDTO> getHistory(Long investigationId) {
+
+        investigationRepository.findById(investigationId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Investigation not found"
+                ));
+
+        return investigationHistoryRepository
+                .findByInvestigationIdOrderByCreatedAtDesc(investigationId)
+                .stream()
+                .map(InvestigationHistoryMapper::toResponseDTO)
                 .toList();
     }
 
