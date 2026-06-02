@@ -17,14 +17,13 @@ import dev.andre.accidentalert.safety.repository.InvestigationHistoryRepository;
 import dev.andre.accidentalert.safety.repository.InvestigationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -88,8 +87,15 @@ public class InvestigationService {
         return InvestigationMapper.toResponseDTO(investigation);
     }
 
-    public Page<InvestigationResponseDTO> findAll(Pageable pageable) {
-        Page<Investigation> investigations = investigationRepository.findAll(pageable);
+    public Page<InvestigationResponseDTO> findAll(InvestigationStatus status, Pageable pageable) {
+        Page<Investigation> investigations;
+
+        if (status != null){
+            investigations = investigationRepository.findInvestigationByStatus(status, pageable);
+        } else {
+            investigations = investigationRepository.findAll(pageable);
+        }
+
 
         return investigations.map(InvestigationMapper::toResponseDTO);
 
@@ -171,13 +177,6 @@ public class InvestigationService {
         }
     }
 
-
-    public List<InvestigationResponseDTO> findByStatus(InvestigationStatus status) {
-        List<Investigation> investigationList = investigationRepository.findInvestigationByStatus(status);
-        return investigationList.stream()
-                .map(InvestigationMapper::toResponseDTO)
-                .toList();
-    }
 
     @Transactional(readOnly = true)
     public List<InvestigationHistoryDTO> getHistory(Long investigationId) {

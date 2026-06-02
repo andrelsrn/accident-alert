@@ -7,13 +7,12 @@ import dev.andre.accidentalert.safety.entity.safetyEnums.InvestigationStatus;
 import dev.andre.accidentalert.safety.service.InvestigationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,13 +39,16 @@ public class InvestigationController {
 
     @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
     @GetMapping
-    @Operation(summary = "List all investigations with pagination", description = "Only Safety Technician can access this endpoint.")
+    @Operation(summary = "List all investigations",
+            description = "Returns a paginated list of investigations. Can be filtered by status." +
+                    " Only Safety Technician can access this endpoint.")
     public ResponseEntity<Page<InvestigationResponseDTO>> getAllInvestigations(
+            @RequestParam(required = false) InvestigationStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.ofSize(size).withPage(page);
-        Page<InvestigationResponseDTO> investigations = service.findAll(pageable);
+        Page<InvestigationResponseDTO> investigations = service.findAll(status,pageable);
         return ResponseEntity.ok(investigations);
     }
 
@@ -58,12 +60,6 @@ public class InvestigationController {
         return service.findById(id);
     }
 
-    @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
-    @GetMapping("/status/{status}")
-    @Operation(summary = "Find investigations by status", description = "Only Safety Technician can access this endpoint.")
-    public List<InvestigationResponseDTO> findByStatus(@PathVariable InvestigationStatus status) {
-        return service.findByStatus(status);
-    }
 
     @PreAuthorize("hasRole('SAFETY_TECHNICIAN')")
     @PatchMapping("/{id}/status")
@@ -82,11 +78,6 @@ public class InvestigationController {
             summary = "Get investigation history",
             description = "Returns the complete investigation status timeline."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "History retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Investigation not found"),
-            @ApiResponse(responseCode = "403", description = "Access denied")
-    })
     public ResponseEntity<List<InvestigationHistoryDTO>> getHistory(
             @PathVariable Long id
     ) {
