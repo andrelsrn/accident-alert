@@ -5,9 +5,9 @@ import dev.andre.accidentalert.ambulatory.dto.response.AccidentResponseDTO;
 import dev.andre.accidentalert.ambulatory.entity.Accident;
 import dev.andre.accidentalert.ambulatory.entity.User;
 import dev.andre.accidentalert.ambulatory.entity.enums.Severity;
+import dev.andre.accidentalert.ambulatory.mapper.AccidentMapper;
 import dev.andre.accidentalert.ambulatory.repository.AccidentRepository;
 import dev.andre.accidentalert.ambulatory.repository.UserRepository;
-import dev.andre.accidentalert.ambulatory.mapper.AccidentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,26 +64,17 @@ public class AccidentService {
         return AccidentMapper.toResponseDTO(saved);
     }
 
-    public Page<AccidentResponseDTO> findAll(Pageable pageable) {
-        Page<Accident> accidents = accidentRepository.findAll(pageable);
+    public Page<AccidentResponseDTO> findAll(Severity severity, Pageable pageable) {
+        Page<Accident> accidents;
+
+        if (severity != null) {
+            accidents = accidentRepository.findBySeverity(severity, pageable);
+        } else {
+            accidents = accidentRepository.findAll(pageable);
+        }
 
         return accidents.map(AccidentMapper::toResponseDTO);
 
-    }
-
-    public List<AccidentResponseDTO> findBySeverity(Severity severity) {
-
-        List<Accident> accidents;
-
-        if (severity != null) {
-            accidents = accidentRepository.findBySeverity(severity);
-        } else {
-            accidents = accidentRepository.findAll();
-        }
-
-        return accidents.stream()
-                .map(AccidentMapper::toResponseDTO)
-                .toList();
     }
 
     public AccidentResponseDTO findById(Long id) {

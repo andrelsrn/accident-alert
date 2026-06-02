@@ -5,8 +5,6 @@ import dev.andre.accidentalert.ambulatory.dto.response.AccidentResponseDTO;
 import dev.andre.accidentalert.ambulatory.entity.enums.Severity;
 import dev.andre.accidentalert.ambulatory.service.AccidentService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -33,10 +29,6 @@ public class AccidentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new accident report", description = "Allowed roles: STAFF or higher.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Report created successfully"),
-            @ApiResponse(responseCode = "403", description = "Access denied - Requires STAFF role")
-    })
     public AccidentResponseDTO create(@RequestBody @Valid AccidentRequestDTO dto) {
         return service.create(dto);
     }
@@ -44,34 +36,25 @@ public class AccidentController {
 
     @PreAuthorize("hasRole('STAFF')")
     @GetMapping
-    @Operation(summary = "List all accident reports with pagination", description = "Allowed roles: STAFF or higher.")
+    @Operation(
+            summary = "List accident reports",
+            description = "Returns a paginated list of accident reports. Results can be filtered by severity." +
+                    "Allowed roles: STAFF or higher."
+    )
     public ResponseEntity<Page<AccidentResponseDTO>> getAll(
+            @RequestParam(required = false) Severity severity,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<AccidentResponseDTO> accidents = service.findAll(pageable);
+        Page<AccidentResponseDTO> accidents = service.findAll(severity,pageable);
         return ResponseEntity.ok(accidents);
-    }
-
-
-    @PreAuthorize("hasRole('STAFF')")
-    @GetMapping("/severity")
-    @Operation(summary = "Filter accidents by severity", description = "Retrieves a filtered list based on the severity level (e.g., LOW, HIGH).")
-    public ResponseEntity<List<AccidentResponseDTO>> getBySeverity(
-            @RequestParam(required = false) Severity severity) {
-
-        return ResponseEntity.ok(service.findBySeverity(severity));
     }
 
 
     @PreAuthorize("hasRole('STAFF')")
     @GetMapping("/{id}")
     @Operation(summary = "Get accident by ID", description = "Allowed roles: STAFF or higher.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Success"),
-            @ApiResponse(responseCode = "404", description = "Accident report not found")
-    })
     public ResponseEntity<AccidentResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
