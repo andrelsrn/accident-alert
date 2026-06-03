@@ -11,5 +11,5 @@ public interface AccidentRepository extends JpaRepository<Accident, Long> {
 
     Page<Accident> findBySeverity(Severity severity, Pageable pageable);
 
-
+    long countBySeverity(Severity severity);
 }

@@ -11,4 +11,6 @@ public interface InvestigationRepository extends JpaRepository<Investigation, Lo
     boolean existsByAccident(Accident accident);
 
     Page<Investigation> findInvestigationByStatus(InvestigationStatus status, Pageable pageable);
+
+    long countByStatus(InvestigationStatus status);
 }
